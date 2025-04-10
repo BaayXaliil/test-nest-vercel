@@ -13,7 +13,7 @@ import { join } from 'path';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
-      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api/docs',
+      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api/docs/',
     }),
     ConfigModule.forRoot({
       isGlobal: true,
