@@ -1,1 +1,0 @@
-{"statusCode":404,"message":"ENOENT: no such file or directory, stat '/Users/macbookpro/Documents/Personnel/insurer-platform-api/swagger-static/index.html'"}
