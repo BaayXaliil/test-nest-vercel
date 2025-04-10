@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       }),
     );
 
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('api/docs', app, document);
 
     // This is important
     await app.init();

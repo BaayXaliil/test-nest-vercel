@@ -2,9 +2,16 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as dotenv from 'dotenv';
+ // core
+ import { resolve } from 'path';
+ import { writeFileSync, createWriteStream } from 'fs';
+ import { get } from 'http';
 
+ 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  dotenv.config();
 
   // Configuration Swagger
   const config = new DocumentBuilder()
@@ -14,7 +21,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   // Validation globale
   app.useGlobalPipes(new ValidationPipe({
@@ -26,6 +33,36 @@ async function bootstrap() {
   // CORS
   app.enableCors();
 
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application API démarrée sur: http://localhost:${port}`);
+  console.log(`Documentation Swagger disponible sur: http://localhost:${port}/api/docs`);
+  // get the swagger json file (if app is running in development mode)
+  if (process.env.NODE_ENV === 'development') {
+    const serverUrl = `http://localhost:${port}`;
+    // write swagger ui files
+    get(
+      `${serverUrl}/swagger/swagger-ui-bundle.js`, function
+      (response) {
+      response.pipe(createWriteStream('swagger-static/swagger-ui-bundle.js'));
+    });
+
+    get(`${serverUrl}/swagger/swagger-ui-init.js`, function (response) {
+      response.pipe(createWriteStream('swagger-static/swagger-ui-init.js'));
+    });
+
+    get(
+      `${serverUrl}/swagger/swagger-ui-standalone-preset.js`,
+      function (response) {
+        response.pipe(
+          createWriteStream('swagger-static/swagger-ui-standalone-preset.js'),
+        );
+      });
+
+    get(`${serverUrl}/swagger/swagger-ui.css`, function (response) {
+      response.pipe(createWriteStream('swagger-static/swagger-ui.css'));
+    });
+
+  }
 }
 bootstrap();
