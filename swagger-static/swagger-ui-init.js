@@ -11,6 +11,20 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
+      "/": {
+        "get": {
+          "operationId": "AppController_getHello",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "App"
+          ]
+        }
+      },
       "/auth/register": {
         "post": {
           "operationId": "AuthController_register",
